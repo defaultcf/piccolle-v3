@@ -12,14 +12,16 @@ class Scrape
             p e
             return
         end
+        imgs = []
         doc.xpath('//dt').each do |node|
             a = node.css('a')
             if !a.empty? then
                 thre = a.attribute('href').value.to_s
-                p getimg(thre)
+                imgs += getimg(thre)
                 sleep(1)
             end
         end
+        return imgs
     end
 
     def getimg(url)
@@ -28,7 +30,7 @@ class Scrape
         rescue => e
             p e
             p url
-            return
+            return []
         end
         imgs = []
         doc.xpath('//dd').each do |node|

@@ -1,4 +1,10 @@
+require 'sinatra'
 require_relative "scrape"
 
-s = Scrape.new
-print s.search('new game')
+set :bind, '0.0.0.0'
+set :port, 8080
+
+get '/' do
+    s = Scrape.new
+    s.search('new game').to_s
+end
