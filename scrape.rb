@@ -4,16 +4,23 @@ require 'open-uri'
 require 'kconv'
 
 class Scrape
-    def search(str)
+    def search(str, n)
         url = 'http://find.2ch.sc/?STR=' + str.gsub(/\s/, '+')
         begin
             doc = open_html(url)
         rescue => e
             p e
-            return
+            return []
         end
+
         imgs = []
-        doc.xpath('//dt').each do |node|
+        if n > 0 then
+            nodes = doc.xpath("//dt[#{n}]")
+        else
+            nodes = doc.xpath("//dt")
+        end
+
+        for node in nodes do
             a = node.css('a')
             if !a.empty? then
                 thre = a.attribute('href').value.to_s
@@ -21,6 +28,7 @@ class Scrape
                 sleep(1)
             end
         end
+
         return imgs
     end
 
