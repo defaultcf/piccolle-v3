@@ -5,7 +5,9 @@ require 'kconv'
 
 class Scrape
     def search(str, n)
-        url = 'http://find.2ch.sc/?STR=' + str.gsub(/\s/, '+')
+        s_a = str.split(/\s+/).map{|s| URI.encode(s.toeuc)}
+        s = s_a.join('+')
+        url = 'http://find.2ch.sc/?STR=' + s
         begin
             doc = open_html(url)
         rescue => e
