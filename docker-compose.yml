@@ -1,0 +1,10 @@
+version: '3'
+services:
+    app:
+        build: ./
+        volumes:
+            - ./:/mnt
+        working_dir: /mnt
+        ports:
+            - 8080:8080
+        tty: true
