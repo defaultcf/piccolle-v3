@@ -6,4 +6,4 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 ADD Gemfile /
-RUN gem install
+RUN bundle install
