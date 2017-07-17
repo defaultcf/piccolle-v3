@@ -6,9 +6,46 @@
     <title>Piccolle ver.3</title>
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
     <link rel="import" href="/src/x-search.html">
+    <style is="custom-style">
+    body {
+        margin: 0;
+    }
+    </style>
 </head>
 <body>
-    <x-search></x-search>
+    <dom-module id="x-app">
+        <template>
+            <x-search></x-search>
+            <iron-scroll-threshold id="scrollThreshold"
+                scroll-target="document"
+                lower-threshold="500"
+                lower-triggered="{{lowerTriggered}}"
+                on-lower-threshold="loadMoreData"
+            ></iron-scroll-threshold>
+        </template>
+
+        <script>
+        window.addEventListener('WebComponentsReady', function() {
+            Polymer({
+                is: 'x-app',
+                properties: {
+                    size: {
+                        type: Number,
+                        value: 1
+                    }
+                },
+                loadMoreData: function() {
+                    this.size++;
+                    console.log(this.size);
+                    this.$.scrollThreshold.clearTriggers();
+                }
+            });
+        });
+        </script>
+    </dom-module>
+
+    <x-app></x-app>
 </body>
 </html>
