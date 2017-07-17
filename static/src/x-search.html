@@ -1,0 +1,19 @@
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+
+<dom-module id="x-search">
+    <template>
+        <paper-input label="欲望のままに">
+            <paper-icon-button slot="suffix" icon="search"></paper-icon-button>
+        </paper-input-container>
+    </template>
+
+    <script>
+    class XSearch extends Polymer.Element {
+        static get is() { return 'x-search'; }
+    }
+    customElements.define(XSearch.is, XSearch);
+    </script>
+</dom-module>
