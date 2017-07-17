@@ -4,6 +4,7 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="x-search">
     <template>
@@ -16,12 +17,14 @@
 
         <paper-input label="欲望のままに" no-label-float value="{{str}}">
             <paper-icon-button slot="prefix" icon="search"></paper-icon-button>
+            <paper-spinner slot="suffix" active="[[loading]]"></paper-spinner>
         </paper-input>
 
         <iron-ajax auto
             url="/search"
             params="[[_formatParams(str, n)]]"
             debounce-duration="1000"
+            loading="{{loading}}"
             last-response="{{imgs}}"
         ></iron-ajax>
 
