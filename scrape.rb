@@ -45,6 +45,7 @@ class Scrape
         imgs = []
         doc.xpath('//dd').each do |node|
             img = node.text.scan(/ttp:\/\/\S+\.(?:jpg|png)/)
+            img.map!{|i| {:src => 'h' + i}}
             imgs += img
         end
         return imgs

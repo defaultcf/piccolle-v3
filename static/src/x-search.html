@@ -1,4 +1,5 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
@@ -6,15 +7,27 @@
 
 <dom-module id="x-search">
     <template>
+        <style>
+        img {
+            max-width: 100%;
+            max-height: 100vh;
+        }
+        </style>
+
         <paper-input label="欲望のままに" no-label-float value="{{str}}">
-            <paper-icon-button slot="suffix" icon="search"></paper-icon-button>
-        </paper-input-container>
+            <paper-icon-button slot="prefix" icon="search"></paper-icon-button>
+        </paper-input>
 
         <iron-ajax auto
             url="/search"
             params="[[_formatParams(str, n)]]"
             debounce-duration="1000"
+            last-response="{{imgs}}"
         ></iron-ajax>
+
+        <template is="dom-repeat" id="menu" items="[[imgs]]">
+            <img src="[[item.src]]">
+        </template>
     </template>
 
     <script>
@@ -27,9 +40,10 @@
                     value: ''
                 },
                 n: {
-                    type:Number,
+                    type: Number,
                     value: 3
-                }
+                },
+                imgs: Array
             }
         }
         _formatParams(str, n) {
