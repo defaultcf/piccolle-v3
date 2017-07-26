@@ -6,8 +6,12 @@
     <title>Piccolle ver.3</title>
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/bower_components/app-layout/app-layout.html">
+    <link rel="import" href="/bower_components/paper-input/paper-input.html">
+    <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+    <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
+    <link rel="import" href="/bower_components/app-layout/demo/sample-content.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-    <link rel="import" href="/src/x-search.html">
     <style is="custom-style">
     body {
         margin: 0;
@@ -17,7 +21,41 @@
 <body>
     <dom-module id="x-app">
         <template>
-            <x-search></x-search>
+            <style>
+            app-toolbar {
+                background-color: #ECEFF1;
+                --app-toolbar-font-size: 24px;
+            }
+            app-toolbar paper-input {
+                width: 100%;
+            }
+            paper-progress {
+                display: block;
+                width: 100%;
+                --paper-progress-active-color: rgba(66, 133, 244, 0.5);
+                --paper-progress-container-color: transparent;
+            }
+            </style>
+            <app-header-layout>
+                <app-header slot="header" reveals>
+                    <app-toolbar>
+                        <paper-input label="欲望のままに" no-label-float value="{{str}}">
+                            <iron-icon slot="prefix" icon="search"></iron-icon>
+                        </paper-input>
+                        <paper-progress indeterminate bottom-item></paper-progress>
+                    </app-toolbar>
+                </app-header>
+                <sample-content size="20"></sample-content>
+            </app-header-layout>
+
+            <iron-ajax auto
+                url="/search"
+                params="[[_formatParams(str, n)]]"
+                debounce-duration="1000"
+                loading="{{loading}}"
+                last-response="{{imgs}}"
+            ></iron-ajax>
+
             <iron-scroll-threshold id="scrollThreshold"
                 scroll-target="document"
                 lower-threshold="500"
@@ -30,22 +68,14 @@
         window.addEventListener('WebComponentsReady', function() {
             Polymer({
                 is: 'x-app',
-                properties: {
-                    size: {
-                        type: Number,
-                        value: 1
-                    }
-                },
                 loadMoreData: function() {
-                    this.size++;
-                    console.log(this.size);
+                    console.log('a');
                     this.$.scrollThreshold.clearTriggers();
                 }
             });
         });
         </script>
     </dom-module>
-
     <x-app></x-app>
 </body>
 </html>
