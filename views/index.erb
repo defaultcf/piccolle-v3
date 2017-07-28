@@ -11,9 +11,7 @@
     <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
     <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
     <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-    <link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-    <link rel="import" href="/src/x-search.html">
     <style is="custom-style">
     body {
         margin: 0;
@@ -48,20 +46,23 @@
                         <paper-input label="欲望のままに" no-label-float value="{{str}}">
                             <iron-icon slot="prefix" icon="search"></iron-icon>
                         </paper-input>
-                        <paper-progress indeterminate bottom-item></paper-progress>
+                        <template is="dom-if" if="[[loading]]">
+                            <paper-progress indeterminate bottom-item></paper-progress>
+                        </template>
                     </app-toolbar>
                 </app-header>
             </app-header-layout>
 
             <iron-ajax auto
                 url="/search"
-                params="[[_formatParams(str, n)]]"
+                params="[[formatParams(str, n)]]"
                 debounce-duration="1000"
                 loading="{{loading}}"
+                on-response="handleResponse"
                 last-response="{{imgs}}"
             ></iron-ajax>
 
-            <template is="dom-repeat" items="[[imgs]]">
+            <template is="dom-repeat" items="[[arr]]">
                 <img src="[[item.src]]">
             </template>
 
@@ -69,7 +70,7 @@
                 scroll-target="document"
                 lower-threshold="500"
                 lower-triggered="{{lowerTriggered}}"
-                on-lower-threshold="_loadMoreData"
+                on-lower-threshold="loadMoreData"
             ></iron-scroll-threshold>
         </template>
 
@@ -82,20 +83,43 @@
                         type: String,
                         value: ''
                     },
+                    loading: {
+                        type: Boolean,
+                        value: false
+                    },
                     n: {
                         type: Number,
-                        value: 3
+                        value: 1
                     },
-                    imgs: Array
+                    arr: {
+                        type: Array,
+                        value: []
+                    }
                 }
             }
-            _formatParams(str, n) {
+            formatParams(str, n) {
                 return {"str": str, "n": n};
             }
-            _loadMoreData() {
-                console.log("Load!");
+            handleResponse() {
+                this._pushPics();
+            }
+            loadMoreData() {
+                this._pushPics();
+                if(!this.imgs || this.imgs.length == 0) {
+                    this.n++;
+                    console.log(this.n);
+                }
                 this.$.scrollThreshold.clearTriggers();
             }
+
+            _pushPics() {
+                console.log("Load");
+                for(let i = 0; i < 10; i++) {
+                    console.log(this.imgs);
+                    if(!this.imgs || this.imgs.length == 0) return;
+                    this.push('arr', this.shift('imgs'));
+                }
+            };
         }
         customElements.define(XApp.is, XApp);
         </script>
