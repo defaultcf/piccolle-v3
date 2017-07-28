@@ -112,7 +112,7 @@
             }
 
             _strChanged() {
-                //this.arr = {}
+                if(this.arr && this.arr.length > 0) this.splice('arr', 0, this.arr.length);
                 this.n = 1;
             }
             _pushPics() {
@@ -120,13 +120,13 @@
                 if(this.str == "") return;
                 for(let i = 0; i < 10; i++) {
                     console.log(this.imgs);
-                    if(!this.imgs || this.imgs.length == 0) {
+                    if(!this.imgs || this.imgs.length == 0 && !loading) {
                         this.n++;
                         return;
                     }
                     this.push('arr', this.shift('imgs'));
                 }
-            };
+            }
         }
         customElements.define(XApp.is, XApp);
         </script>
