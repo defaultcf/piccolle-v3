@@ -31,12 +31,6 @@
             app-toolbar paper-input {
                 width: 100%;
             }
-            paper-progress {
-                display: block;
-                width: 100%;
-                --paper-progress-active-color: rgba(66, 133, 244, 0.5);
-                --paper-progress-container-color: transparent;
-            }
             img {
                 max-width: 100%;
                 max-height: 100vh;
@@ -50,8 +44,11 @@
             <iron-location hash="{{hash}}"></iron-location>
 
             <app-header-layout>
-                <app-header slot="header" reveals effects="waterfall">
+                <app-header slot="header" condenses fixed effects="waterfall">
                     <app-toolbar>
+                        <div main-title>2chPics</div>
+                    </app-toolbar>
+                    <app-toolbar sticky>
                         <paper-input label="欲望のままに" no-label-float value="{{str}}">
                             <iron-icon slot="prefix" icon="search"></iron-icon>
                         </paper-input>
@@ -118,11 +115,11 @@
             }
             //Ajax実行時
             handleResponse() {
+                console.log("Search str:" + this.str + ", n:" + this.n);
                 this._pushPics();
             }
             //最下部到達時
             loadMoreData() {
-                if(this.n == 1) return;
                 this._pushPics();
                 this.$.scrollThreshold.clearTriggers();
             }
@@ -132,10 +129,9 @@
                 this.n = 1;
             }
             _pushPics() {
-                console.log("Load");
                 if(this.str == "") return;
                 for(let i = 0; i < 10; i++) {
-                    console.log(this.imgs);
+                    //console.log(this.imgs);
                     if(!this.imgs || this.imgs.length == 0 && !this.loading) {
                         this.n++;
                         return;
