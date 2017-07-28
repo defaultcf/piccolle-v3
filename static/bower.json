@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
+    "iron-location": "PolymerElements/iron-location#^2.0.1",
     "app-layout": "PolymerElements/app-layout#^2.0.1",
     "paper-input": "PolymerElements/paper-input#^2.0.1",
     "iron-icon": "PolymerElements/iron-icon#^2.0.0",
