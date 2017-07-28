@@ -81,7 +81,8 @@
                 return {
                     str: {
                         type: String,
-                        value: ''
+                        value: '',
+                        observer: '_strChanged'
                     },
                     loading: {
                         type: Boolean,
@@ -100,23 +101,29 @@
             formatParams(str, n) {
                 return {"str": str, "n": n};
             }
+            //Ajax実行時
             handleResponse() {
                 this._pushPics();
             }
+            //最下部到達時
             loadMoreData() {
                 this._pushPics();
-                if(!this.imgs || this.imgs.length == 0) {
-                    this.n++;
-                    console.log(this.n);
-                }
                 this.$.scrollThreshold.clearTriggers();
             }
 
+            _strChanged() {
+                //this.arr = {}
+                this.n = 1;
+            }
             _pushPics() {
                 console.log("Load");
+                if(this.str == "") return;
                 for(let i = 0; i < 10; i++) {
                     console.log(this.imgs);
-                    if(!this.imgs || this.imgs.length == 0) return;
+                    if(!this.imgs || this.imgs.length == 0) {
+                        this.n++;
+                        return;
+                    }
                     this.push('arr', this.shift('imgs'));
                 }
             };
