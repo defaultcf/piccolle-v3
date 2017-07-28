@@ -7,11 +7,12 @@
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link rel="import" href="/bower_components/polymer/polymer.html">
     <link rel="import" href="/bower_components/app-layout/app-layout.html">
+    <link rel="import" href="/bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
     <link rel="import" href="/bower_components/paper-input/paper-input.html">
     <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
-    <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
     <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+    <link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
     <style is="custom-style">
     body {
         margin: 0;
@@ -39,16 +40,17 @@
                 max-width: 100%;
                 max-height: 100vh;
             }
+            .flex-center-justfied {
+                @apply --layout-horizontal;
+                @apply --layout-center-justified;
+            }
             </style>
             <app-header-layout>
-                <app-header slot="header" reveals>
+                <app-header slot="header" reveals effects="waterfall">
                     <app-toolbar>
                         <paper-input label="欲望のままに" no-label-float value="{{str}}">
                             <iron-icon slot="prefix" icon="search"></iron-icon>
                         </paper-input>
-                        <template is="dom-if" if="[[loading]]">
-                            <paper-progress indeterminate bottom-item></paper-progress>
-                        </template>
                     </app-toolbar>
                 </app-header>
             </app-header-layout>
@@ -65,6 +67,9 @@
             <template is="dom-repeat" items="[[arr]]">
                 <img src="[[item.src]]">
             </template>
+            <div class="flex-center-justfied">
+                <paper-spinner active="[[loading]]"></paper-spinner>
+            </div>
 
             <iron-scroll-threshold id="scrollThreshold"
                 scroll-target="document"
@@ -120,7 +125,7 @@
                 if(this.str == "") return;
                 for(let i = 0; i < 10; i++) {
                     console.log(this.imgs);
-                    if(!this.imgs || this.imgs.length == 0 && !loading) {
+                    if(!this.imgs || this.imgs.length == 0 && !this.loading) {
                         this.n++;
                         return;
                     }
