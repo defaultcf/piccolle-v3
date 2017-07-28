@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piccolle ver.3</title>
+    <title>2chPics</title>
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link rel="import" href="/bower_components/polymer/polymer.html">
     <link rel="import" href="/bower_components/iron-location/iron-location.html">
@@ -41,7 +41,10 @@
             }
             </style>
 
-            <iron-location hash="{{hash}}"></iron-location>
+            <iron-location id="ironLocation"
+                hash="{{hash}}"
+                dwell-time="5000"
+            ></iron-location>
 
             <app-header-layout>
                 <app-header slot="header" condenses fixed effects="waterfall">
@@ -107,15 +110,15 @@
             ready() {
                 super.ready();
                 this.str = this.hash;
+                this.$.ironLocation.addEventListener('hash-changed', this._hashChanged);
             }
 
             formatParams(str, n) {
-                this.hash = str;
                 return {"str": str, "n": n};
             }
             //Ajax実行時
             handleResponse() {
-                console.log("Search str:" + this.str + ", n:" + this.n);
+                //console.log("Search str:" + this.str + ", n:" + this.n);
                 this._pushPics();
             }
             //最下部到達時
@@ -124,9 +127,17 @@
                 this.$.scrollThreshold.clearTriggers();
             }
 
+            _hashChanged() {
+                console.log("Hash changed!");
+                this.str = this.hash;
+                console.log("hashでstrは「" + this.str + "」になった");
+                //this._strChanged();
+            }
             _strChanged() {
                 if(this.arr && this.arr.length > 0) this.splice('arr', 0, this.arr.length);
                 this.n = 1;
+                //this.hash = this.str;
+                document.getElementsByTagName("title")[0].innerHTML = '2chPics' + (this.str != '' ? ' - '+this.str : '');
             }
             _pushPics() {
                 if(this.str == "") return;
