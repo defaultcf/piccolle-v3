@@ -10,8 +10,10 @@
     <link rel="import" href="/bower_components/paper-input/paper-input.html">
     <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
     <link rel="import" href="/bower_components/paper-progress/paper-progress.html">
-    <link rel="import" href="/bower_components/app-layout/demo/sample-content.html">
+    <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+    <link rel="import" href="/bower_components/polymer/lib/elements/dom-repeat.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+    <link rel="import" href="/src/x-search.html">
     <style is="custom-style">
     body {
         margin: 0;
@@ -35,6 +37,10 @@
                 --paper-progress-active-color: rgba(66, 133, 244, 0.5);
                 --paper-progress-container-color: transparent;
             }
+            img {
+                max-width: 100%;
+                max-height: 100vh;
+            }
             </style>
             <app-header-layout>
                 <app-header slot="header" reveals>
@@ -45,7 +51,6 @@
                         <paper-progress indeterminate bottom-item></paper-progress>
                     </app-toolbar>
                 </app-header>
-                <sample-content size="20"></sample-content>
             </app-header-layout>
 
             <iron-ajax auto
@@ -56,24 +61,43 @@
                 last-response="{{imgs}}"
             ></iron-ajax>
 
+            <template is="dom-repeat" items="[[imgs]]">
+                <img src="[[item.src]]">
+            </template>
+
             <iron-scroll-threshold id="scrollThreshold"
                 scroll-target="document"
                 lower-threshold="500"
                 lower-triggered="{{lowerTriggered}}"
-                on-lower-threshold="loadMoreData"
+                on-lower-threshold="_loadMoreData"
             ></iron-scroll-threshold>
         </template>
 
         <script>
-        window.addEventListener('WebComponentsReady', function() {
-            Polymer({
-                is: 'x-app',
-                loadMoreData: function() {
-                    console.log('a');
-                    this.$.scrollThreshold.clearTriggers();
+        class XApp extends Polymer.Element {
+            static get is() { return 'x-app'; }
+            static get properties() {
+                return {
+                    str: {
+                        type: String,
+                        value: ''
+                    },
+                    n: {
+                        type: Number,
+                        value: 3
+                    },
+                    imgs: Array
                 }
-            });
-        });
+            }
+            _formatParams(str, n) {
+                return {"str": str, "n": n};
+            }
+            _loadMoreData() {
+                console.log("Load!");
+                this.$.scrollThreshold.clearTriggers();
+            }
+        }
+        customElements.define(XApp.is, XApp);
         </script>
     </dom-module>
     <x-app></x-app>
