@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2chPics</title>
-    <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-    <link rel="import" href="/bower_components/polymer/polymer.html">
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="/bower_components/polymer/polymer-element.html">
     <link rel="import" href="/bower_components/iron-location/iron-location.html">
     <link rel="import" href="/bower_components/app-layout/app-layout.html">
     <link rel="import" href="/bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
@@ -84,6 +84,7 @@
         </template>
 
         <script>
+        HTMLImports.whenReady(function() {
         class XApp extends Polymer.Element {
             static get is() { return 'x-app'; }
             static get properties() {
@@ -148,6 +149,7 @@
             }
         }
         customElements.define(XApp.is, XApp);
+        });
         </script>
     </dom-module>
     <x-app></x-app>
