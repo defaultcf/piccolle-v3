@@ -52,7 +52,7 @@
                         <div main-title>2chPics</div>
                     </app-toolbar>
                     <app-toolbar sticky>
-                        <paper-input label="欲望のままに" no-label-float value="{{str}}">
+                        <paper-input label="欲望のままに" value="{{str}}" no-label-float autofocus>
                             <iron-icon slot="prefix" icon="search"></iron-icon>
                         </paper-input>
                     </app-toolbar>
@@ -88,6 +88,10 @@
             static get is() { return 'x-app'; }
             static get properties() {
                 return {
+                    hash: {
+                        type: String,
+                        observer: '_hashChanged'
+                    },
                     str: {
                         type: String,
                         value: '',
@@ -107,18 +111,13 @@
                     }
                 }
             }
-            ready() {
-                super.ready();
-                this.str = this.hash;
-                this.$.ironLocation.addEventListener('hash-changed', this._hashChanged);
-            }
 
             formatParams(str, n) {
                 return {"str": str, "n": n};
             }
             //Ajax実行時
             handleResponse() {
-                //console.log("Search str:" + this.str + ", n:" + this.n);
+                console.log("Search str:" + this.str + ", n:" + this.n);
                 this._pushPics();
             }
             //最下部到達時
@@ -131,18 +130,16 @@
                 console.log("Hash changed!");
                 this.str = this.hash;
                 console.log("hashでstrは「" + this.str + "」になった");
-                //this._strChanged();
             }
             _strChanged() {
                 if(this.arr && this.arr.length > 0) this.splice('arr', 0, this.arr.length);
                 this.n = 1;
-                //this.hash = this.str;
+                this.hash = this.str;
                 document.getElementsByTagName("title")[0].innerHTML = '2chPics' + (this.str != '' ? ' - '+this.str : '');
             }
             _pushPics() {
                 if(this.str == "") return;
                 for(let i = 0; i < 10; i++) {
-                    //console.log(this.imgs);
                     if(!this.imgs || this.imgs.length == 0 && !this.loading) {
                         this.n++;
                         return;
