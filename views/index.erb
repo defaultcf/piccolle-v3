@@ -3,11 +3,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piccolle ver.3</title>
+    <title>2chPics</title>
     <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <link rel="import" href="/bower_components/polymer/polymer.html">
+    <link rel="import" href="/bower_components/iron-location/iron-location.html">
+    <link rel="import" href="/bower_components/app-layout/app-layout.html">
+    <link rel="import" href="/bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+    <link rel="import" href="/bower_components/paper-input/paper-input.html">
+    <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+    <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-    <link rel="import" href="/src/x-search.html">
+    <link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
     <style is="custom-style">
     body {
         margin: 0;
@@ -17,7 +23,58 @@
 <body>
     <dom-module id="x-app">
         <template>
-            <x-search></x-search>
+            <style>
+            app-toolbar {
+                background-color: #ECEFF1;
+                --app-toolbar-font-size: 24px;
+            }
+            app-toolbar paper-input {
+                width: 100%;
+            }
+            img {
+                max-width: 100%;
+                max-height: 100vh;
+            }
+            .flex-center-justfied {
+                @apply --layout-horizontal;
+                @apply --layout-center-justified;
+            }
+            </style>
+
+            <iron-location
+                hash="{{str}}"
+                dwell-time="5000"
+            ></iron-location>
+
+            <app-header-layout>
+                <app-header slot="header" condenses fixed effects="waterfall">
+                    <app-toolbar>
+                        <div main-title>2chPics</div>
+                    </app-toolbar>
+                    <app-toolbar sticky>
+                        <paper-input label="欲望のままに" value="{{str}}" no-label-float autofocus>
+                            <iron-icon slot="prefix" icon="search"></iron-icon>
+                        </paper-input>
+                    </app-toolbar>
+                </app-header>
+            </app-header-layout>
+
+            <iron-ajax auto
+                url="/search"
+                params="[[formatParams(str, n)]]"
+                debounce-duration="1000"
+                loading="{{loading}}"
+                on-response="handleResponse"
+                last-response="{{imgs}}"
+            ></iron-ajax>
+
+            <template is="dom-repeat" items="[[arr]]">
+                <img src="[[item.src]]">
+            </template>
+            <div class="flex-center-justfied">
+                <paper-spinner active="[[loading]]"></paper-spinner>
+            </div>
+
             <iron-scroll-threshold id="scrollThreshold"
                 scroll-target="document"
                 lower-threshold="500"
@@ -27,25 +84,72 @@
         </template>
 
         <script>
-        window.addEventListener('WebComponentsReady', function() {
-            Polymer({
-                is: 'x-app',
-                properties: {
-                    size: {
+        class XApp extends Polymer.Element {
+            static get is() { return 'x-app'; }
+            static get properties() {
+                return {
+                    str: {
+                        type: String,
+                        value: '',
+                        observer: '_strChanged'
+                    },
+                    loading: {
+                        type: Boolean,
+                        value: false
+                    },
+                    n: {
                         type: Number,
                         value: 1
+                    },
+                    arr: {
+                        type: Array,
+                        value: []
+                    },
+                    flag: {
+                        type: Boolean,
+                        value: true
                     }
-                },
-                loadMoreData: function() {
-                    this.size++;
-                    console.log(this.size);
-                    this.$.scrollThreshold.clearTriggers();
                 }
-            });
-        });
+            }
+
+            formatParams(str, n) {
+                return {"str": str, "n": n};
+            }
+            //Ajax実行時
+            handleResponse() {
+                console.log("Search str:" + this.str + ", n:" + this.n);
+                this._pushPics('ajax');
+            }
+            //最下部到達時
+            loadMoreData() {
+                this._pushPics('loadmore');
+                this.$.scrollThreshold.clearTriggers();
+            }
+
+            _strChanged() {
+                if(this.arr && this.arr.length > 0) this.splice('arr', 0, this.arr.length);
+                this.flag = false;
+                this.n = 1;
+                document.getElementsByTagName("title")[0].innerHTML = '2chPics' + (this.str != '' ? ' - '+this.str : '');
+            }
+            _pushPics(from) {
+                if(this.str == "") return;
+                if(!this.flag && from == 'loadmore'){
+                    this.flag = true;
+                    return;
+                }
+                for(let i = 0; i < 10; i++) {
+                    if(!this.imgs || this.imgs.length == 0 && !this.loading) {
+                        this.n++;
+                        return;
+                    }
+                    this.push('arr', this.shift('imgs'));
+                }
+            }
+        }
+        customElements.define(XApp.is, XApp);
         </script>
     </dom-module>
-
     <x-app></x-app>
 </body>
 </html>
