@@ -7,7 +7,9 @@ class Scrape
     def search(str, n)
         s_a = str.split(/\s+/).map{|s| URI.encode(s.toeuc)}
         s = s_a.join('+')
-        url = 'http://find.2ch.sc/?STR=' + s
+        o = (n-1) / 50
+        url = 'http://find.2ch.sc/?STR=' + s + '&OFFSET=' + o.to_s
+        p url
         begin
             doc = open_html(url)
         rescue => e
@@ -17,6 +19,7 @@ class Scrape
 
         imgs = []
         if n > 0 then
+            n = (n % 50) + 1
             nodes = doc.xpath("//dt[#{n}]")
         else
             nodes = doc.xpath("//dt")
