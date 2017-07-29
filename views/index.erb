@@ -41,8 +41,8 @@
             }
             </style>
 
-            <iron-location id="ironLocation"
-                hash="{{hash}}"
+            <iron-location
+                hash="{{str}}"
                 dwell-time="5000"
             ></iron-location>
 
@@ -88,10 +88,6 @@
             static get is() { return 'x-app'; }
             static get properties() {
                 return {
-                    hash: {
-                        type: String,
-                        observer: '_hashChanged'
-                    },
                     str: {
                         type: String,
                         value: '',
@@ -108,6 +104,10 @@
                     arr: {
                         type: Array,
                         value: []
+                    },
+                    flag: {
+                        type: Boolean,
+                        value: true
                     }
                 }
             }
@@ -118,27 +118,26 @@
             //Ajax実行時
             handleResponse() {
                 console.log("Search str:" + this.str + ", n:" + this.n);
-                this._pushPics();
+                this._pushPics('ajax');
             }
             //最下部到達時
             loadMoreData() {
-                this._pushPics();
+                this._pushPics('loadmore');
                 this.$.scrollThreshold.clearTriggers();
             }
 
-            _hashChanged() {
-                console.log("Hash changed!");
-                this.str = this.hash;
-                console.log("hashでstrは「" + this.str + "」になった");
-            }
             _strChanged() {
                 if(this.arr && this.arr.length > 0) this.splice('arr', 0, this.arr.length);
+                this.flag = false;
                 this.n = 1;
-                this.hash = this.str;
                 document.getElementsByTagName("title")[0].innerHTML = '2chPics' + (this.str != '' ? ' - '+this.str : '');
             }
-            _pushPics() {
+            _pushPics(from) {
                 if(this.str == "") return;
+                if(!this.flag && from == 'loadmore'){
+                    this.flag = true;
+                    return;
+                }
                 for(let i = 0; i < 10; i++) {
                     if(!this.imgs || this.imgs.length == 0 && !this.loading) {
                         this.n++;
