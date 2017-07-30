@@ -20,7 +20,12 @@
     <link rel="import" href="/bower_components/app-layout/app-layout.html">
     <link rel="import" href="/bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
     <link rel="import" href="/bower_components/paper-input/paper-input.html">
+    <link rel="import" href="/bower_components/paper-menu-button/paper-menu-button.html">
+    <link rel="import" href="bower_components/neon-animation/web-animations.html">
+    <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
     <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+    <link rel="import" href="/bower_components/iron-icons/social-icons.html">
+    <link rel="import" href="/bower_components/paper-item/paper-item.html">
     <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
     <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
@@ -65,6 +70,13 @@
                     <app-toolbar sticky>
                         <paper-input id="strinput" type="search" label="欲望のままに" value="{{str}}" no-label-float autofocus>
                             <iron-icon slot="prefix" icon="search"></iron-icon>
+                            <paper-menu-button slot="suffix">
+                                <paper-icon-button slot="dropdown-trigger" icon="social:share"></paper-icon-button>
+                                <paper-list-box slot="dropdown-content">
+                                    <paper-item>Twitter</paper-item>
+                                    <paper-item>Email</paper-item>
+                                </paper-list-box>
+                            </paper-menu-button>
                         </paper-input>
                     </app-toolbar>
                 </app-header>
