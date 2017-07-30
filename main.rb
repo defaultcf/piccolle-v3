@@ -5,6 +5,7 @@ require_relative "scrape"
 set :bind, '0.0.0.0'
 set :port, 8080
 set :public_folder, File.dirname(__FILE__) + '/static'
+set :protection, :except => :json_csrf
 
 get '/' do
     erb :index
