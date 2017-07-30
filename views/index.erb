@@ -21,6 +21,7 @@
     <link rel="import" href="/bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
     <link rel="import" href="/bower_components/paper-input/paper-input.html">
     <link rel="import" href="/bower_components/iron-icons/iron-icons.html">
+    <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
     <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
     <link rel="import" href="/bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
     <link rel="import" href="/bower_components/paper-spinner/paper-spinner.html">
@@ -62,12 +63,18 @@
                         <div main-title>2chPics</div>
                     </app-toolbar>
                     <app-toolbar sticky>
-                        <paper-input label="欲望のままに" value="{{str}}" no-label-float autofocus>
+                        <paper-input id="strinput" type="search" label="欲望のままに" value="{{str}}" no-label-float autofocus>
                             <iron-icon slot="prefix" icon="search"></iron-icon>
                         </paper-input>
                     </app-toolbar>
                 </app-header>
             </app-header-layout>
+
+            <iron-a11y-keys
+                target="[[strinput]]"
+                keys="enter"
+                on-keys-pressed="onEnter"
+            ></iron-a11y-keys>
 
             <iron-ajax auto
                 url="/search"
@@ -104,6 +111,7 @@
                         value: '',
                         observer: '_strChanged'
                     },
+                    strinput: Object,
                     loading: {
                         type: Boolean,
                         value: false
@@ -122,16 +130,21 @@
                     }
                 }
             }
+            ready() {
+                super.ready();
+                this.strinput = this.$.strinput;
+            }
 
+            onEnter() {
+                this.$.strinput.blur();
+            }
             formatParams(str, n) {
                 return {"str": str, "n": n};
             }
-            //Ajax実行時
             handleResponse() {
                 console.log("Search str:" + this.str + ", n:" + this.n);
                 this._pushPics('ajax');
             }
-            //最下部到達時
             loadMoreData() {
                 this._pushPics('loadmore');
                 this.$.scrollThreshold.clearTriggers();
